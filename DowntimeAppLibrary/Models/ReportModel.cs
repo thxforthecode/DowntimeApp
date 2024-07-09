@@ -24,7 +24,7 @@ public class ReportModel
 
    public bool Status { get; set; } = false;
 
-   public bool Archived {  get; set; } = false;
+   public bool Archived { get; set; } = false;
 
 
 

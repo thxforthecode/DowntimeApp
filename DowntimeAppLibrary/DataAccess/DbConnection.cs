@@ -5,7 +5,7 @@ using MongoDB.Driver;
 
 namespace DowntimeAppLibrary.DataAccess;
 
-public class DbConnection
+public class DbConnection : IDbConnection
 {
    private readonly IConfiguration _config;
    private readonly IMongoDatabase _db;
@@ -27,8 +27,8 @@ public class DbConnection
 
       ReportCollection = _db.GetCollection<ReportModel>(ReportCollectionName);
       UserCollection = _db.GetCollection<UserModel>(UserCollectionName);
-            
+
    }
-   
+
 
 }
