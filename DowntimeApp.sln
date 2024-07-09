@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35004.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DowntimeAppUI", "DowntimeAppUI\DowntimeAppUI.csproj", "{099D315C-7195-42E2-A6CD-5C2FAE338B57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DowntimeAppLibrary", "DowntimeAppLibrary\DowntimeAppLibrary.csproj", "{5DC34B66-33BC-4468-93A0-A5F7F58938A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6580B799-5593-4D53-A822-F07DE985E75C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{099D315C-7195-42E2-A6CD-5C2FAE338B57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{099D315C-7195-42E2-A6CD-5C2FAE338B57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{099D315C-7195-42E2-A6CD-5C2FAE338B57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{099D315C-7195-42E2-A6CD-5C2FAE338B57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DC34B66-33BC-4468-93A0-A5F7F58938A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DC34B66-33BC-4468-93A0-A5F7F58938A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DC34B66-33BC-4468-93A0-A5F7F58938A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DC34B66-33BC-4468-93A0-A5F7F58938A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8997CC44-3C20-4276-9BF1-D651626B6167}
+	EndGlobalSection
+EndGlobal
