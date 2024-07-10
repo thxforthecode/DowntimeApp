@@ -18,6 +18,7 @@ public class ReportModel
    public BasicUserModel Author { get; set; }
    public DateTime WhenCreated { get; set; } = DateTime.UtcNow;
 
+   //
    public HashSet<string> UserSaves { get; set; } = new();
 
    //status is "ongoing" or "resolved" defaults to resolved
