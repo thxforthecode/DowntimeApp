@@ -44,6 +44,13 @@ public class MongoReportData : IReportData
       return output.Where(x => x.Status == false).ToList();
    }
 
+   public async Task<List<ReportModel>> GetReportsByMachine(string machineId)
+   {
+
+      //check this one. 
+      var output = await GetAllReports();
+      return output.Where(x => x.Machine == machineId).ToList();
+   }
    public async Task<ReportModel> GetReport(string id)
    {
       var results = await _reports.FindAsync(s => s.Id == id);
@@ -108,6 +115,7 @@ public class MongoReportData : IReportData
 
       }
    }
+
 
    public async Task CreateReport(ReportModel report)
    {

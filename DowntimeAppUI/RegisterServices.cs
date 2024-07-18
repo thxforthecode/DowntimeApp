@@ -10,7 +10,9 @@ public static class RegisterServices
       builder.Services.AddMemoryCache();
 
       builder.Services.AddSingleton<IDbConnection, DbConnection>();
-      builder.Services.AddTransient
+      builder.Services.AddSingleton<IMachineData, MongoMachineData>();
+      builder.Services.AddSingleton<IUserData, MongoUserData>();
+      builder.Services.AddSingleton<IReportData, MongoReportData>();
 
    }
 }

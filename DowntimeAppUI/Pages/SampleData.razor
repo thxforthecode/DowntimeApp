@@ -1,0 +1,46 @@
+﻿@page "/SampleData"
+@inject IMachineData machineData
+
+<h3>Sample Data</h3>
+@if (machinesCreated)
+{
+    <h4>Sample Machines Created</h4>
+}
+else
+{
+    <button class=" btn btn-primary " @onclick="CreateMachines">Create Machines</button>
+}
+
+@code {
+
+    private bool machinesCreated = false;
+    private async Task CreateMachines()
+    {
+        var machines = await machineData.GetAllMachines();
+        if (machines?.Count > 0)
+        {
+            return;
+        }
+
+        MachineModel machine = new()
+            {
+                MachineName = "8719",
+                MachineDept = "Department 369",
+                MachineDescription = "This is a test machine",
+
+            };
+            await machineData.CreateMachines(machine);
+        machine = new()
+            {
+                MachineName = "8720",
+                MachineDept = "Department 369",
+                MachineDescription = "This is a test machine but less so iykwim",
+
+            };
+        await machineData.CreateMachines(machine);
+
+        machinesCreated = true;
+            
+    }
+
+}

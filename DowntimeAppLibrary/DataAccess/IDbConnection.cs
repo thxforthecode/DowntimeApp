@@ -6,6 +6,10 @@ namespace DowntimeAppLibrary.DataAccess
    {
       MongoClient Client { get; }
       string DbName { get; }
+
+      IMongoCollection<MachineModel> MachineCollection { get; }
+      string MachineCollectionName { get; }
+
       IMongoCollection<ReportModel> ReportCollection { get; }
       string ReportCollectionName { get; }
       IMongoCollection<UserModel> UserCollection { get; }
