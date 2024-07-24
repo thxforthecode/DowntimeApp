@@ -1,16 +1,87 @@
 ﻿@page "/"
 
-@inject IReportData ReportData
-@inject IUserData UserData
+@inject IReportData reportData
+@inject IUserData userData
+@inject IMachineData machineData
 @inject NavigationManager navManager
 @inject ProtectedSessionStorage sessionStorage
 
+<h1>Downtime Reports</h1>
+<div>
+    <button>Create a Report</button>
+</div>
+<div>
+    <div>@reports?.Count Reports</div>
+    <div><button @onclick="(() => OrderByNew(true))">New</button></div>
+    <div><button @onclick="(() => OrderByNew(false))">Most Saved</button></div>
+</div>
+<div>
+    <input type="text" placeholder="Search" aria-label="Search box" @oninput="((txt) => OnSearchInput((string)txt.Value))" />
+</div>
+
+<div>
+    <div>
+        @if (reports is not null)
+        {
+            <Virtualize Items="@reports" Context="r" OverscanCount="10">
+                <div>
+                    <div>
+                        <div>@GetUserSaveText(r)</div>
+                        <span class="oi oi-caret-top"></span> 
+                    </div>
+                    <div>
+                        <div @onclick="(() => OpenDetails(r))">
+                            @r.Issue
+                        </div>
+                    </div>
+                    <div>
+                        <div @onclick="(() => OpenDetails(r))">
+                            @r.Machine?.MachineName
+                        </div>
+                    </div>
+                    <div>
+                        @if (r.Status)
+                        {
+                            <div>Active</div>
+                        }
+                        else
+                        {
+                            <div>Inactive</div>
+                        }
+                    </div>
+                </div>
+            </Virtualize>
+        }
+    </div>
+    <div>
+        @if(machines is not null)
+        {
+            <div>
+                <span>Machine</span>
+                <div @onclick="(() => OnMachineSelect())">All</div>
+                @foreach (var m in machines)
+                {
+                    <div @onclick="(() =>)"
+                }
+            </div>            
+        }
+    </div>
+</div>
+
+
 @code {
-    private List<ReportModel> reports = new List<ReportModel>();
+    private List<ReportModel> reports;
+    private List<MachineModel> machines;
+
+    private string selectedMachine = "All";
     private string searchText = "";
     bool isSortedbyNew = true;
 
-    
+    protected async override Task OnInitializedAsync()
+    {
+        reports = await reportData.GetAllReports();
+        machines = await machineData.GetAllMachines();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -24,14 +95,108 @@
 
     private async Task LoadFilterState()
     {
-        //stopped here to go back and do machine names as "categories" v13
-        //var stringResults = 
+        var stringResults = await sessionStorage.GetAsync<string>(nameof(selectedMachine));
+        if(stringResults.Value != null)
+        {
+            selectedMachine = stringResults.Value;
+        }
+        else
+        {
+            selectedMachine = "All";
+        }
+        stringResults = await sessionStorage.GetAsync<string>(nameof(searchText));
+        if (stringResults.Value != null)
+        {
+            searchText = stringResults.Value;
+        }
+        else
+        {
+            searchText = "";
+        }
+        var boolResults = await sessionStorage.GetAsync<bool>(nameof(isSortedbyNew));
+        if (stringResults.Value != null)
+        {
+            isSortedbyNew = boolResults.Value;
+        }
+        else
+        {
+            isSortedbyNew = true;
+        }
+    }
+
+    private async Task SaveFilterState()
+    {
+        await sessionStorage.SetAsync(nameof(selectedMachine), selectedMachine);
+        await sessionStorage.SetAsync(nameof(searchText), searchText);
+        await sessionStorage.SetAsync(nameof(isSortedbyNew), isSortedbyNew);
     }
 
     private async Task FilterReports()
     {
-        
+        var output = await reportData.GetAllReports();
+
+        if (selectedMachine != "All")
+        {
+            output = output.Where(x => x.Machine.MachineName == selectedMachine).ToList();
+        }
+        //searches the issue AND solution descriptions for the search text
+        if(string.IsNullOrWhiteSpace(searchText) == false)
+        {
+            output = output.Where(r => r.Issue.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)
+            || r.Solution.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)).ToList();
+        }
+
+        if(isSortedbyNew)
+        {
+            output = output.OrderByDescending(x => x.WhenCreated).ToList();
+        }
+        else
+        {
+            output = output.OrderByDescending(x => x.UserSaves.Count).ThenByDescending(x => x.WhenCreated).ToList();
+        }
+
+        reports = output;
+
+        await SaveFilterState();
+
+
     }
-    
+
+    private async Task OrderByNew(bool isNew)
+    {
+        isSortedbyNew = isNew;
+        await FilterReports();
+    }
+
+    private async Task OnSearchInput(string searchInput)
+    {
+        searchText = searchInput;
+        await FilterReports();
+    }
+
+    private async Task OnMachineSelect(string machine = "All")
+    {
+        selectedMachine = machine;
+        await FilterReports();
+    }
+
+    private string GetUserSaveText(ReportModel report)
+    {
+        if(report.UserSaves.Count > 0)
+        {
+            return $"{report.UserSaves.Count.ToString("00")} Saves!";
+        }
+        else
+        {
+            return "Click to Save";
+        }
+    }
+
+    private void OpenDetails(ReportModel report)
+    {
+        //creates a new URL with the report ID. noice. 
+        navManager.NavigateTo($"/Details/{report.Id}");
+    }
+
 }
 

@@ -13,7 +13,7 @@ public class ReportModel
 
    public string Solution { get; set; }
    public int DowntimeAmount { get; set; }
-   public string Machine { get; set; }
+   public MachineModel Machine { get; set; }
 
    public BasicUserModel Author { get; set; }
    public DateTime WhenCreated { get; set; } = DateTime.UtcNow;

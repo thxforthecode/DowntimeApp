@@ -49,7 +49,7 @@ public class MongoReportData : IReportData
 
       //check this one. 
       var output = await GetAllReports();
-      return output.Where(x => x.Machine == machineId).ToList();
+      return output.Where(x => x.Machine.MachineId == machineId).ToList();
    }
    public async Task<ReportModel> GetReport(string id)
    {

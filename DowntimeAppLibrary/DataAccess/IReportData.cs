@@ -6,6 +6,7 @@ namespace DowntimeAppLibrary.DataAccess
       Task CreateReport(ReportModel report);
       Task<List<ReportModel>> GetAllReports();
       Task<List<ReportModel>> GetOngoingReports();
+      Task<List<ReportModel>> GetReportsByMachine(string machineId);
       Task<ReportModel> GetReport(string id);
       Task<List<ReportModel>> GetResolvedReports();
       Task UpdateReport(ReportModel report);

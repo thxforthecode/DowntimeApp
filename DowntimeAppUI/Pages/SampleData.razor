@@ -1,5 +1,8 @@
 ﻿@page "/SampleData"
 @inject IMachineData machineData
+@inject IReportData reportData
+@inject IUserData userData
+
 
 <h3>Sample Data</h3>
 @if (machinesCreated)
@@ -9,6 +12,10 @@
 else
 {
     <button class=" btn btn-primary " @onclick="CreateMachines">Create Machines</button>
+    <button class=" btn btn-primary " @onclick="CreateSampleUser">Create users</button>
+    <button class=" btn btn-primary " @onclick="CreateSampleReports">Create Reports</button>
+
+
 }
 
 @code {
@@ -29,7 +36,7 @@ else
                 MachineDescription = "This is a test machine",
 
             };
-            await machineData.CreateMachines(machine);
+        await machineData.CreateMachines(machine);
         machine = new()
             {
                 MachineName = "8720",
@@ -39,8 +46,47 @@ else
             };
         await machineData.CreateMachines(machine);
 
-        machinesCreated = true;
-            
+
     }
 
+    private async Task CreateSampleUser()
+    {
+        UserModel Jerry = new()
+            {
+
+                ObjectIdentifier = "thang",
+                FirstName = "Jerry",
+                LastName = "jankerson",
+                Email = "Yerrymail",
+                AuthoredReports = { },
+                SavedReports = { }
+            };
+        await userData.CreateUser(Jerry);
+    }
+
+    private async Task CreateSampleReports()
+    {
+        var reports = await reportData.GetAllReports();
+
+        if (reports?.Count > 0)
+        {
+            return;
+        }
+        ReportModel report = new()
+            {
+
+                Issue = "Test Issue",   
+                Solution = "operator error",
+                DowntimeAmount = 55,
+                Machine = await machineData.GetMachine("8719"),
+                Author = new BasicUserModel(await userData.GetUser("66a0ee877b66fed7f064822c")),
+                WhenCreated = DateTime.Now,
+                UserSaves = { },
+                Status = false,
+                Archived = false
+            };
+        await reportData.CreateReport(report);
+        machinesCreated = true;
+
+}
 }

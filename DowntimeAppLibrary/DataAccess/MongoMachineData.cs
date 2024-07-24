@@ -35,5 +35,13 @@ public class MongoMachineData : IMachineData
       return _machines.InsertOneAsync(machine);
    }
 
+   public async Task<MachineModel> GetMachine(string name)
+   {
+      var output = await _machines.FindAsync(r => r.MachineName == name);
+
+      
+      return output.FirstOrDefault();
+   }
+
 
 }
