@@ -61,10 +61,11 @@
                 <div @onclick="(() => OnMachineSelect())">All</div>
                 @foreach (var m in machines)
                 {
-                    <div @onclick="(() =>)"
+                    <div @onclick="(() => OnMachineSelect(m.MachineName))">@m.MachineName</div>
                 }
             </div>            
         }
+        
     </div>
 </div>
 

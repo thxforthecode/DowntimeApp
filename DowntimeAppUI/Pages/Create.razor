@@ -1,0 +1,82 @@
+﻿@page "/Create"
+@using DowntimeAppUI.Models
+
+
+@inject IMachineData machineData
+@inject IUserData userData
+@inject IReportData reportData
+@inject NavigationManager navManager
+
+
+<h1>Create a Report</h1>
+
+<div>
+    <div>
+        <div>
+            <button @onclick="ClosePage"></button>
+        </div>
+        @if(machines != null)
+        {
+            
+        }
+        <EditForm Model="report" OnValidSubmit="CreateReport">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div>
+                <label for="issue-text">Report</label>
+                <div>What happened to your machine?</div>
+                <InputTextArea id="issue-text" @bind-Value="report.Issue" />
+            </div>
+            
+            <div>
+                <label for="solution-text">Report</label>
+                <div>What solved or helped the problem with your machine?</div>
+                <InputTextArea id="solution-text" @bind-Value="report.Solution" />
+            </div>
+            <div>
+                <button type="submit">Create Report</button>
+            </div>
+
+
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+    private CreateReportModel report = new();
+    private List<MachineModel> machines;
+    private UserModel loggedInUser;
+
+    protected async override Task OnInitializedAsync()
+    {
+        machines = await machineData.GetAllMachines();
+        //TODO replace with user lookup
+        loggedInUser = await userData.GetUserFromAuthentification("66a0ee877b66fed7f064822c");
+    }
+
+    private void ClosePage()
+    {
+        navManager.NavigateTo("/");
+    }
+
+    private async Task CreateReport()
+    {
+        ReportModel r = new();
+        r.Issue = report.Issue;
+        r.Solution = report.Solution;
+        r.Author = new BasicUserModel(loggedInUser);
+        r.Machine = machines.Where(m => m.Id == report.MachineId).FirstorDefault();
+
+        if(r.Machine == null)
+        {
+            report.MachineId = "";
+            return;
+        }
+
+        await reportData.CreateReport(r);
+        report = new();
+        ClosePage();
+    }
+
+}

@@ -1,0 +1,69 @@
+﻿@page "/Details/{Id}"
+
+@inject IReportData reportData
+@inject NavigationManager navManager
+
+<h1>Report Details</h1>
+
+<div>
+    <div>
+        @if(report is not null)
+        {
+            <div>
+                <div>
+                    <div>
+                       <div>@GetUserSaveText()</div>
+                       <span class="oi oi-caret-top"></span>                       
+                    </div>
+                    <div>
+                        <div>@report.WhenCreated.ToString("MM.dd.yyyy")</div>
+                    </div>
+                   
+                </div>
+                <div>
+                    <div>@report.Machine.MachineName</div>
+                    <div>@report.Author.FirstName</div>
+                    <div>@report.Author.LastName</div>
+                    <div>@report.Issue</div>
+                    <div>@report.Solution</div>
+                </div>
+                <div>
+                    <button @onclick="ClosePage"></button>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private ReportModel report;
+
+    protected async override Task OnInitializedAsync()
+    {
+        report = await reportData.GetReport(Id);
+    }
+
+    private void ClosePage()
+    {
+        navManager.NavigateTo("/");
+    }
+
+    private string GetUserSaveText()
+    {
+        //may need to change text here, this is copied from index.razor
+        if (report.UserSaves.Count > 0)
+        {
+            return $"{report.UserSaves.Count.ToString("00")} Saves!";
+        }
+        else
+        {
+            return "Click to Save";
+        }
+    }
+}
