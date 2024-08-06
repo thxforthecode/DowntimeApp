@@ -1,0 +1,163 @@
+﻿@page "/Profile"
+@inject IReportData reportData
+@inject IUserData userData
+@inject NavigationManager navManager
+
+
+<h1>Profile</h1>
+
+<div>
+    <div>
+        <button @onclick="ClosePage">Close</button> 
+    </div>
+</div>
+
+<div>
+    <h2>My Account</h2>
+    <p>
+        <a href="MicrosoftIdentity/Account/EditProfile">
+            Edit My Profile
+        </a>
+    </p>
+</div>
+
+@if (ongoingReports?.Count > 0)
+{
+    <div>
+        <h2>Ongoing Issues</h2>
+        <p>These are your issues that have not been solved yet.</p>
+        @foreach (var r in ongoingReports)
+        {
+            <hr />
+            <div>
+                @r.Issue
+            </div>
+            <p>
+                @r.WhenCreated.ToString("MM.dd.yyyy")
+            </p>
+            <p>
+                User Saves: @r.UserSaves.Count
+            </p>
+            <p>
+                @r.Machine.MachineName
+            </p>
+            <p>
+                @r.Solution
+            </p>
+        }
+    </div>
+}
+
+@if (authoredReports?.Count > 0)
+{
+    <div>
+        <h2>My Reports</h2>
+        <p>These are all the reports you have written.</p>
+        @foreach (var r in authoredReports)
+        {
+            <hr />
+            <div>
+                @r.Issue
+            </div>
+            <p>
+                @r.WhenCreated.ToString("MM.dd.yyyy")
+            </p>
+            <p>
+                User Saves: @r.UserSaves.Count
+            </p>
+            <p>
+                @r.Machine.MachineName
+            </p>
+            <p>
+                @r.Solution
+            </p>
+        }
+    </div>
+}
+
+@if (resolvedReports?.Count > 0)
+{
+    <div>
+        <h2>Resolved Reports</h2>
+        <p>These are your reports that have been solved.</p>
+        @foreach (var r in resolvedReports)
+        {
+            <hr />
+            <div>
+                @r.Issue
+            </div>
+            <p>
+                @r.WhenCreated.ToString("MM.dd.yyyy")
+            </p>
+            <p>
+                User Saves: @r.UserSaves.Count
+            </p>
+            <p>
+                @r.Machine.MachineName
+            </p>
+            <p>
+                @r.Solution
+            </p>
+        }
+    </div>
+}
+
+@if (archivedReports?.Count > 0)
+{
+    <div>
+        <h2>Archived Reports</h2>
+        <p>These are your old reports that may no longer be needed/relevant.</p>
+        @foreach (var r in archivedReports)
+        {
+            <hr />
+            <div>
+                @r.Issue
+            </div>
+            <p>
+                @r.WhenCreated.ToString("MM.dd.yyyy")
+            </p>
+            <p>
+                User Saves: @r.UserSaves.Count
+            </p>
+            <p>
+                @r.Machine.MachineName
+            </p>
+            <p>
+                @r.Solution
+            </p>
+        }
+    </div>
+}
+@code {
+    private UserModel loggedInUser;
+    private List<ReportModel> authoredReports;
+    private List<ReportModel> archivedReports;
+    private List<ReportModel> ongoingReports;
+    private List<ReportModel> resolvedReports;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loggedInUser = await userData.GetUser("66a0ee877b66fed7f064822c");
+
+        var results = await reportData.GetAuthoredReports(loggedInUser.Id);
+
+        if(loggedInUser is not null && results is not null)
+        {
+            authoredReports = results.OrderByDescending(r=>r.WhenCreated).ToList();
+            //both status and archived default to false. status false would be an ongoing issue
+            archivedReports = authoredReports.Where(r => r.Archived == true).ToList();
+            resolvedReports = authoredReports.Where(r => r.Status == true && r.Archived == false).ToList();
+            ongoingReports = authoredReports.Where(r => r.Status == false && r.Archived == false).ToList();
+            
+        }
+
+
+    }
+
+    private void ClosePage()
+    {
+        navManager.NavigateTo("/");
+    }
+
+
+}

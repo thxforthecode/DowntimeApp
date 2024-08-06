@@ -11,5 +11,6 @@ namespace DowntimeAppLibrary.DataAccess
       Task<List<ReportModel>> GetResolvedReports();
       Task UpdateReport(ReportModel report);
       Task UserSaveReport(string reportId, string userId);
+      Task<List<ReportModel>> GetAuthoredReports(string userId);
    }
 }

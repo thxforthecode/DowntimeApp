@@ -32,6 +32,18 @@ public class MongoReportData : IReportData
 
    }
 
+   public async Task<List<ReportModel>> GetAuthoredReports(string userId)
+   {
+      var output = _cache.Get<List<ReportModel>>(userId);
+      if (output == null)
+      {
+         var results = await _reports.FindAsync(r => r.Author.Id == userId);
+         output = results.ToList();
+         
+         _cache.Set(userId, output, TimeSpan.FromMinutes(1));
+      }
+      return output;
+   }
    public async Task<List<ReportModel>> GetResolvedReports()
    {
       var output = await GetAllReports();

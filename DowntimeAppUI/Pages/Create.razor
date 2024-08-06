@@ -1,4 +1,5 @@
 ﻿@page "/Create"
+@using DowntimeAppUI.Components
 @using DowntimeAppUI.Models
 
 
@@ -27,7 +28,21 @@
                 <div>What happened to your machine?</div>
                 <InputTextArea id="issue-text" @bind-Value="report.Issue" />
             </div>
-            
+            <div>
+                <label for="machine">Machine</label>
+                <div>Choose your machine</div>
+                <div>
+                    <MyInputRadioGroup id="machine" @bind-Value="report.MachineId">
+                        @foreach(var m in machines)
+                        {
+                            <div>
+                                <InputRadio Value="m.MachineId" id="@m.MachineId" />
+                                <label for="@m.MachineId">@m.MachineName - @m.MachineDept</label>
+                            </div>
+                        }
+                    </MyInputRadioGroup>
+                </div>
+            </div>
             <div>
                 <label for="solution-text">Report</label>
                 <div>What solved or helped the problem with your machine?</div>
@@ -52,7 +67,7 @@
     {
         machines = await machineData.GetAllMachines();
         //TODO replace with user lookup
-        loggedInUser = await userData.GetUserFromAuthentification("66a0ee877b66fed7f064822c");
+        loggedInUser = await userData.GetUser("66a0ee877b66fed7f064822c");
     }
 
     private void ClosePage()
@@ -66,7 +81,7 @@
         r.Issue = report.Issue;
         r.Solution = report.Solution;
         r.Author = new BasicUserModel(loggedInUser);
-        r.Machine = machines.Where(m => m.Id == report.MachineId).FirstorDefault();
+        r.Machine = machines.Where(m => m.MachineId == report.MachineId).First();
 
         if(r.Machine == null)
         {

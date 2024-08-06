@@ -8,12 +8,27 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Components\" />
+    <Content Remove="Pages\AdminApproval.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DowntimeAppLibrary\DowntimeAppLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\AdminApproval.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\AdminApproval.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\AdminApproval.razor" />
   </ItemGroup>
 
 </Project>
