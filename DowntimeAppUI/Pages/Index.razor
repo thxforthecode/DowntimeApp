@@ -5,6 +5,7 @@
 @inject IMachineData machineData
 @inject NavigationManager navManager
 @inject ProtectedSessionStorage sessionStorage
+@inject AuthenticationStateProvider authProvider
 
 <h1>Downtime Reports</h1>
 <div>
@@ -25,7 +26,7 @@
         {
             <Virtualize Items="@reports" Context="r" OverscanCount="10">
                 <div>
-                    <div>
+                    <div @onclick="(() => SaveReport(r))">
                         <div>@GetUserSaveText(r)</div>
                         <span class="oi oi-caret-top"></span> 
                     </div>
@@ -71,6 +72,7 @@
 
 
 @code {
+    private UserModel loggedInUser;
     private List<ReportModel> reports;
     private List<MachineModel> machines;
 
@@ -82,6 +84,62 @@
     {
         reports = await reportData.GetAllReports();
         machines = await machineData.GetAllMachines();
+        await LoadAndVerifyUser();
+
+    }
+
+    private async Task LoadAndVerifyUser()
+    {
+        var authState = await authProvider.GetAuthenticationStateAsync();
+        string objectId = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("objectidentifier"))?.Value;
+
+        if(string.IsNullOrWhiteSpace(objectId) == false)
+        {
+            loggedInUser = await userData.GetUserFromAuthentification(objectId) ?? new();
+
+
+            string firstName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("givenname"))?.Value;
+            string lastName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("surname"))?.Value;
+            string displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
+            string email = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
+
+            bool isDirty = false;
+            if (objectId.Equals(loggedInUser.ObjectIdentifier) == false)
+            {
+                isDirty = true;
+                loggedInUser.ObjectIdentifier = objectId;
+            }
+            if (firstName.Equals(loggedInUser.FirstName) == false)
+            {
+                isDirty = true;
+                loggedInUser.FirstName = firstName;
+            }
+            if (lastName.Equals(loggedInUser.LastName) == false)
+            {
+                isDirty = true;
+                loggedInUser.LastName = lastName;
+            }
+            if (email.Equals(loggedInUser.Email) == false)
+            {
+                isDirty = true;
+                loggedInUser.Email= email;
+            }
+            if (isDirty)
+            {
+                if (string.IsNullOrWhiteSpace(loggedInUser.Id))
+                {
+                    await userData.CreateUser(loggedInUser);
+                }
+                else
+                {
+                    await userData.UpdateUser(loggedInUser);
+                }
+            }
+
+
+
+
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -181,6 +239,32 @@
         await FilterReports();
     }
 
+    private async Task SaveReport(ReportModel report)
+    {
+        if(loggedInUser is not null)
+        {
+            if(report.Author.Id == loggedInUser.Id)
+            {
+                return;
+            }
+            //removes this user from report saves if theyre already there(unsave)
+            if (report.UserSaves.Add(loggedInUser.Id) == false)
+            {
+                report.UserSaves.Remove(loggedInUser.Id);
+            }
+
+            await reportData.UserSaveReport(report.Id, loggedInUser.Id);
+
+            if (isSortedbyNew == false)
+            {
+                reports = reports.OrderByDescending(r => r.UserSaves.Count).ThenByDescending(r => r.WhenCreated).ToList();
+            }
+        }
+        else
+        {
+            navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+        }
+    }
     private string GetUserSaveText(ReportModel report)
     {
         if(report.UserSaves.Count > 0)
@@ -189,7 +273,15 @@
         }
         else
         {
-            return "Click to Save";
+            if(report.Author.Id == loggedInUser?.Id)
+            {
+                return "Awaiting Saves";
+            }
+            else
+            {
+                return "Click to Save";
+            }
+            
         }
     }
 

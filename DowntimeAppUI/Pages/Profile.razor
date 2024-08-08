@@ -1,7 +1,9 @@
 ﻿@page "/Profile"
+@attribute [Authorize]
 @inject IReportData reportData
 @inject IUserData userData
 @inject NavigationManager navManager
+@inject AuthenticationStateProvider authProvider
 
 
 <h1>Profile</h1>
@@ -137,7 +139,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        loggedInUser = await userData.GetUser("66a0ee877b66fed7f064822c");
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
 
         var results = await reportData.GetAuthoredReports(loggedInUser.Id);
 

@@ -1,8 +1,9 @@
 ﻿@page "/Create"
+@attribute [Authorize]
 @using DowntimeAppUI.Components
 @using DowntimeAppUI.Models
 
-
+@inject AuthenticationStateProvider authProvider
 @inject IMachineData machineData
 @inject IUserData userData
 @inject IReportData reportData
@@ -66,8 +67,8 @@
     protected async override Task OnInitializedAsync()
     {
         machines = await machineData.GetAllMachines();
-        //TODO replace with user lookup
-        loggedInUser = await userData.GetUser("66a0ee877b66fed7f064822c");
+
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
     }
 
     private void ClosePage()

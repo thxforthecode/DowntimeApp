@@ -96,7 +96,7 @@ public class MongoReportData : IReportData
             report.UserSaves.Remove(userId);
          }
 
-         await reportsInTransaction.ReplaceOneAsync(s => s.Id == report.Id, report);
+         await reportsInTransaction.ReplaceOneAsync(session, s => s.Id == report.Id, report);
 
          var usersInTransaction = db.GetCollection<UserModel>(_db.UserCollectionName);
          var user = await _userData.GetUser(userId);
@@ -111,7 +111,7 @@ public class MongoReportData : IReportData
             user.SavedReports.Remove(reportToRemove);
          }
          //update the user
-         await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
+         await usersInTransaction.ReplaceOneAsync(session, u => u.Id == user.Id, user);
 
          await session.CommitTransactionAsync();
 
@@ -138,12 +138,12 @@ public class MongoReportData : IReportData
       {
          var db = client.GetDatabase(_db.DbName);
          var reportsInTransaction = db.GetCollection<ReportModel>(_db.ReportCollectionName);
-         await reportsInTransaction.InsertOneAsync(report);
+         await reportsInTransaction.InsertOneAsync(session, report);
 
          var usersInTransaction = db.GetCollection<UserModel>(_db.UserCollectionName);
          var user = await _userData.GetUser(report.Author.Id);
          user.AuthoredReports.Add(new BasicReportModel(report));
-         await usersInTransaction.ReplaceOneAsync(u => u.Id == user.Id, user);
+         await usersInTransaction.ReplaceOneAsync(session, u => u.Id == user.Id, user);
 
          await session.CommitTransactionAsync();
          //clear the cache. this is so that they can see the new report. 
