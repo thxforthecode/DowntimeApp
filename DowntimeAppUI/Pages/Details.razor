@@ -2,6 +2,9 @@
 
 @inject IReportData reportData
 @inject NavigationManager navManager
+@inject AuthenticationStateProvider authProvider
+@inject IUserData userData
+
 
 <h1>Report Details</h1>
 
@@ -11,7 +14,7 @@
         {
             <div>
                 <div>
-                    <div>
+                    <div @onclick="SaveReport">
                        <div>@GetUserSaveText()</div>
                        <span class="oi oi-caret-top"></span>                       
                     </div>
@@ -43,10 +46,13 @@
     public string Id { get; set; }
 
     private ReportModel report;
+    private UserModel loggedInUser;
+
 
     protected async override Task OnInitializedAsync()
     {
         report = await reportData.GetReport(Id);
+        loggedInUser = await authProvider.GetUserFromAuth(userData);
     }
 
     private void ClosePage()
@@ -63,7 +69,36 @@
         }
         else
         {
-            return "Click to Save";
+            if (report.Author.Id == loggedInUser?.Id)
+            {
+                return "Awaiting Saves";
+            }
+            else
+            {
+                return "Click to Save";
+            }
+        }
+    }
+    private async Task SaveReport()
+    {
+        if (loggedInUser is not null)
+        {
+            if (report.Author.Id == loggedInUser.Id)
+            {
+                return;
+            }
+            //removes this user from report saves if theyre already there(unsave)
+            if (report.UserSaves.Add(loggedInUser.Id) == false)
+            {
+                report.UserSaves.Remove(loggedInUser.Id);
+            }
+
+            await reportData.UserSaveReport(report.Id, loggedInUser.Id);
+
+        }
+        else
+        {
+            navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
         }
     }
 }
