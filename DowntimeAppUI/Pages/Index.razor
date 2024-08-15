@@ -7,62 +7,60 @@
 @inject ProtectedSessionStorage sessionStorage
 @inject AuthenticationStateProvider authProvider
 
-<h1>Downtime Reports</h1>
-<div>
-    <button>Create a Report</button>
-</div>
-<div>
-    <div>@reports?.Count Reports</div>
-    <div><button @onclick="(() => OrderByNew(true))">New</button></div>
-    <div><button @onclick="(() => OrderByNew(false))">Most Saved</button></div>
-</div>
-<div>
-    <input type="text" placeholder="Search" aria-label="Search box" @oninput="((txt) => OnSearchInput((string)txt.Value))" />
+<h1 class="page-heading text-uppercase mb-4">Downtime Reports</h1>
+<div class="report-container">
+    <button @onclick="LoadCreatePage" class="create-btn btn btn-outline-light btn-lg text-uppercase">Create a Report</button>
 </div>
 
-<div>
-    <div>
+<div class="row">
+    <div class="reports-count col-md-4 text-light mt-2">@reports?.Count Reports</div>
+    <div class="col-md-4 col-lg-5 btn-group">
+        <button class="btn btn-order @SortedByNewClass(true)" @onclick="(() => OrderByNew(true))">New</button>
+        <button class="btn btn-order @SortedByNewClass(false)"@onclick="(() => OrderByNew(false))">Most Saved</button>
+    </div>
+    <div class="col-md-4 col-xl-3 search-box">
+        <input type="text" placeholder="Search" aria-label="Search box" class="form-control rounded-control"
+        @oninput="((txt) => OnSearchInput((string)txt.Value))" />
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-8 col-xl-9">
         @if (reports is not null)
         {
             <Virtualize Items="@reports" Context="r" OverscanCount="10">
-                <div>
-                    <div @onclick="(() => SaveReport(r))">
-                        <div>@GetUserSaveText(r)</div>
-                        <span class="oi oi-caret-top"></span> 
+                <div class="report-entry">
+                    <div class="@GetSaveClass(r)" @onclick="(() => SaveReport(r))">
+                        <div class="text-uppercase">@GetUserSaveText(r)</div>
+                        <span class="oi oi-caret-top" style="font-size: 3rem;"></span> 
                     </div>
-                    <div>
-                        <div @onclick="(() => OpenDetails(r))">
+                    <div class="report-entry-text">
+                        <div class="report-entry-text-machine" @onclick="(() => OpenDetails(r))">
                             @r.Machine?.MachineName
                         </div>
                     </div>
                     <div>
-                        <div @onclick="(() => OpenDetails(r))">
+                        <div class="report-entry-issue-text" @onclick="(() => OpenDetails(r))">
                             @r.Issue
                         </div>
                     </div>
-                    <div>
-                        @if (r.Status)
-                        {
-                            <div>Active</div>
-                        }
-                        else
-                        {
-                            <div>Inactive</div>
-                        }
+                    <div class="report-entry-status @GetReportStatusClass(r)">
+                        <div class="report-entry-status-text">@r.Status</div>
                     </div>
                 </div>
             </Virtualize>
         }
     </div>
-    <div>
+    <div class="col-md-4 col-xl-3">
         @if(machines is not null)
         {
-            <div>
-                <span>Machine</span>
-                <div @onclick="(() => OnMachineSelect())">All</div>
+            <div class="machines">
+                <span class="text-uppercase fw-bold">Machine</span>
+                <div class="@GetSelectedMachine()" @onclick="(() => OnMachineSelect())">All</div>
                 @foreach (var m in machines)
                 {
-                    <div @onclick="(() => OnMachineSelect(m.MachineName))">@m.MachineName</div>
+                    <div class="@GetSelectedMachine(m.MachineName)" @onclick="(() => OnMachineSelect(m.MachineName))">@m.MachineName</div>
                 }
             </div>            
         }
@@ -86,6 +84,18 @@
         machines = await machineData.GetAllMachines();
         await LoadAndVerifyUser();
 
+    }
+
+    private void LoadCreatePage()
+    {
+        if(loggedInUser is not null)
+        {
+            navManager.NavigateTo("/Create");
+        }
+        else
+        {
+            navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+        }
     }
 
     private async Task LoadAndVerifyUser()
@@ -281,7 +291,7 @@
             {
                 return "Click to Save";
             }
-            
+
         }
     }
 
@@ -289,6 +299,58 @@
     {
         //creates a new URL with the report ID. noice. 
         navManager.NavigateTo($"/Details/{report.Id}");
+    }
+
+    private string SortedByNewClass(bool isNew)
+    {
+        if (isNew == isSortedbyNew)
+        {
+            return "sort-selected";
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    private string GetSaveClass(ReportModel report)
+    {
+        if(report.UserSaves is null || report.UserSaves.Count == 0)
+        {
+            return "report-entry-no-saves";
+        } 
+        else if (report.UserSaves.Contains(loggedInUser?.Id))
+        {
+            return "report-entry-saved";
+        }
+        else
+        {
+            return "report-entry-not-saved";
+        }
+    }
+
+    private string GetReportStatusClass(ReportModel report)
+    {
+        if(report is null || report.Status == false)
+        {
+            return "report-entry-status-active";
+        }
+        else
+        {
+            return "report-entry-status-archived";
+        }
+    }
+
+    private string GetSelectedMachine(string machine= "All")
+    {
+        if(machine == selectedMachine)
+        {
+            return "selected-machine";
+        }
+        else
+        {
+            return "";
+        }
     }
 
 }
