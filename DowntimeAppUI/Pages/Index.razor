@@ -16,7 +16,7 @@
     <div class="reports-count col-md-4 text-light mt-2">@reports?.Count Reports</div>
     <div class="col-md-4 col-lg-5 btn-group">
         <button class="btn btn-order @SortedByNewClass(true)" @onclick="(() => OrderByNew(true))">New</button>
-        <button class="btn btn-order @SortedByNewClass(false)"@onclick="(() => OrderByNew(false))">Most Saved</button>
+        <button class="btn btn-order @SortedByNewClass(false)" @onclick="(() => OrderByNew(false))">Most Saved</button>
     </div>
     <div class="col-md-4 col-xl-3 search-box">
         <input type="text" placeholder="Search" aria-label="Search box" class="form-control rounded-control"
@@ -39,14 +39,24 @@
                         <div class="report-entry-text-machine" @onclick="(() => OpenDetails(r))">
                             @r.Machine?.MachineName
                         </div>
-                    </div>
-                    <div>
-                        <div class="report-entry-issue-text" @onclick="(() => OpenDetails(r))">
-                            @r.Issue
+                        <div>
+                            <div class="report-entry-issue-text" @onclick="(() => OpenDetails(r))">
+                                @r.Issue
+                            </div>
                         </div>
                     </div>
+                    
                     <div class="report-entry-status @GetReportStatusClass(r)">
-                        <div class="report-entry-status-text">@r.Status</div>
+                        <div class="report-entry-status-text">
+                            @if (@r.Status)
+                            {
+                                <div>Archived</div>
+                            }
+                            else
+                            {
+                                <div>Ongoing</div>
+                            }
+                        </div>
                     </div>
                 </div>
             </Virtualize>

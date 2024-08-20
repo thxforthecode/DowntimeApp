@@ -10,51 +10,51 @@
 @inject NavigationManager navManager
 
 
-<h1>Create a Report</h1>
+<h1 class="page-heading text-uppercase mb-4">Create a Report</h1>
 
-<div>
-    <div>
-        <div>
-            <button @onclick="ClosePage"></button>
+<div class="row justify-content-center create-form">
+    <div class="col-xl-8 col-lg-10 form-layout">
+        <div class="close-button-section">
+            <button class="btn btn-close" @onclick="ClosePage"></button>
         </div>
         @if(machines != null)
         {
-            
-        }
-        <EditForm Model="report" OnValidSubmit="CreateReport">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-            <div>
-                <label for="issue-text">Report</label>
-                <div>What happened to your machine?</div>
-                <InputTextArea id="issue-text" @bind-Value="report.Issue" />
-            </div>
-            <div>
-                <label for="machine">Machine</label>
-                <div>Choose your machine</div>
-                <div>
-                    <MyInputRadioGroup id="machine" @bind-Value="report.MachineId">
-                        @foreach(var m in machines)
-                        {
-                            <div>
-                                <InputRadio Value="m.MachineId" id="@m.MachineId" />
-                                <label for="@m.MachineId">@m.MachineName - @m.MachineDept</label>
-                            </div>
-                        }
-                    </MyInputRadioGroup>
+            <EditForm Model="report" OnValidSubmit="CreateReport">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="input-section">
+                    <label class="form-label fw-bold text-uppercase" for="issue-text">Report</label>
+                    <div class="input-description">What happened to your machine?</div>
+                    <InputTextArea class="form-control" id="issue-text" @bind-Value="report.Issue" />
                 </div>
-            </div>
-            <div>
-                <label for="solution-text">Report</label>
-                <div>What solved or helped the problem with your machine?</div>
-                <InputTextArea id="solution-text" @bind-Value="report.Solution" />
-            </div>
-            <div>
-                <button type="submit">Create Report</button>
-            </div>
+                <div class="input-section">
+                    <label class="form-label fw-bold text-uppercase" for="machine">Machine</label>
+                    <div class="input-description">Choose your machine</div>
+                    <div class="col-lg-8">
+                        <MyInputRadioGroup id="machine" @bind-Value="report.MachineId">
+                            @foreach (var m in machines)
+                            {
+                                <div class="radio-item-group">
+                                    <InputRadio Value="m.MachineId" id="@m.MachineId" />
+                                    <label for="@m.MachineId">@m.MachineName - @m.MachineDept</label>
+                                </div>
+                            }
+                        </MyInputRadioGroup>
+                    </div>
+                </div>
+                <div class="input-section">
+                    <label class="form-label fw-bold text-uppercase" for="solution-text">Report</label>
+                    <div class="input-description">What solved or helped the problem with your machine?</div>
+                    <InputTextArea class="form-control" id="solution-text" @bind-Value="report.Solution" />
+                </div>
+                <div class="center-children">
+                    <button class="btn btn-main btn-lg text-uppercase" type="submit">Create Report</button>
+                </div>
 
 
-        </EditForm>
+            </EditForm>
+        }
+        
     </div>
 </div>
 
