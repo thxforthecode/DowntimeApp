@@ -43,6 +43,24 @@
                     </div>
                 </div>
                 <div class="input-section">
+                    <label class="form-label fw-bold text-uppercase" for="status">Status</label>
+                    <div class="input-description">Is this issue ongoing or was it fixed?</div>
+                    <div class="col-lg-8">
+                        <MyInputRadioGroup id="status" @bind-Value="report.StatusAtCreation">
+                            <div class="radio-item-group">
+                                <InputRadio Value="@true" id="thang" />
+                                <label for="thang">Ongoing Issue</label>
+                            </div>
+                            <div class="radio-item-group">
+                            
+                                <InputRadio Value="@false" id="hmm" />
+                                <label for="hmm">Solved!</label>
+                            </div>
+                        </MyInputRadioGroup>
+                    </div>
+                </div>
+
+                <div class="input-section">
                     <label class="form-label fw-bold text-uppercase" for="solution-text">Report</label>
                     <div class="input-description">What solved or helped the problem with your machine?</div>
                     <InputTextArea class="form-control" id="solution-text" @bind-Value="report.Solution" />
@@ -63,7 +81,6 @@
     private CreateReportModel report = new();
     private List<MachineModel> machines;
     private UserModel loggedInUser;
-
     protected async override Task OnInitializedAsync()
     {
         machines = await machineData.GetAllMachines();
@@ -83,6 +100,7 @@
         r.Solution = report.Solution;
         r.Author = new BasicUserModel(loggedInUser);
         r.Machine = machines.Where(m => m.MachineId == report.MachineId).First();
+        r.Status = report.StatusAtCreation;
 
         if(r.Machine == null)
         {

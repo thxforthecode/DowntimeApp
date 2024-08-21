@@ -16,4 +16,7 @@ public class CreateReportModel
    [MinLength(1)]
    [Display(Name = "Machine")]
    public string MachineId { get; set; }
+
+   [Required]
+   public bool StatusAtCreation { get; set; }
 }
