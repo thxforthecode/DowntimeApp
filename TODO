@@ -1,0 +1,4 @@
+status needs to be 1 for ongoing and 0 for resolved. also maybe add third option?
+add downtime range to createdowntimereport model?
+add option for "machine is still down"
+add status buttons to details page when user is author
