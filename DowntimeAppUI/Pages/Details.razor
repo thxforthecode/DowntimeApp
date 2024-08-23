@@ -6,32 +6,35 @@
 @inject IUserData userData
 
 
-<h1>Report Details</h1>
+<h1 class="page-heading text-uppercase mb-4">Report Details</h1>
 
-<div>
-    <div>
+<div class="row justify-content-center detail-form">
+    <div class="col-xl-8 col-lg-10 form-layout">
         @if(report is not null)
         {
-            <div>
-                <div>
-                    <div @onclick="SaveReport">
-                       <div>@GetUserSaveText()</div>
-                       <span class="oi oi-caret-top"></span>                       
+            <div class="row report-detail-row">
+                <div class="col-11 report-detail">
+                    <div>
+                        <div class="@GetSaveClass()" @onclick="SaveReport">
+                            <div class="text-uppercase">@GetUserSaveText()</div>
+                            <span class="oi oi-caret-top detail-save"></span>
+                        </div>
+                        <div class="report-detail-date">
+                            <div>@report.WhenCreated.ToString("MM.dd.yyyy")</div>
+                        </div>
                     </div>
                     <div>
-                        <div>@report.WhenCreated.ToString("MM.dd.yyyy")</div>
+                        <div class="report-detail-text">
+                            <div class="fw-bold mb-2 report-detail-machinename">@report.Machine.MachineName</div>
+                            <div class="mb-2 report-detail-author">@report.Author.FirstName</div>
+                            <div class="mb-2 report-detail-author">@report.Author.LastName</div>
+                            <div class="mb-2">@report.Issue</div>
+                            <div class="mb-2">@report.Solution</div>
+                        </div>
                     </div>
-                   
                 </div>
-                <div>
-                    <div>@report.Machine.MachineName</div>
-                    <div>@report.Author.FirstName</div>
-                    <div>@report.Author.LastName</div>
-                    <div>@report.Issue</div>
-                    <div>@report.Solution</div>
-                </div>
-                <div>
-                    <button @onclick="ClosePage"></button>
+                <div class="col-1 close-button-section">
+                    <button class="btn btn-close" @onclick="ClosePage"></button>
                 </div>
 
             </div>
@@ -99,6 +102,21 @@
         else
         {
             navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+        }
+    }
+    private string GetSaveClass()
+    {
+        if (report.UserSaves is null || report.UserSaves.Count == 0)
+        {
+            return "report-detail-no-saves";
+        }
+        else if (report.UserSaves.Contains(loggedInUser?.Id))
+        {
+            return "report-detail-saved";
+        }
+        else
+        {
+            return "report-detail-not-saved";
         }
     }
 }

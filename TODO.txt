@@ -4,4 +4,4 @@ add option for "machine is still down"
 add status buttons to details page when user is author
 add "add new machine"" button and form
 
-test
+exception when you spam the save button from details page
