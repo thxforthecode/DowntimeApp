@@ -2,6 +2,7 @@
 @inject IMachineData machineData
 @inject IReportData reportData
 @inject IUserData userData
+@inject IPartData partData
 
 
 <h3>Sample Data</h3>
@@ -14,12 +15,30 @@ else
     <button class=" btn btn-primary " @onclick="CreateMachines">Create Machines</button>
     <button class=" btn btn-primary " @onclick="CreateSampleUser">Create users</button>
     <button class=" btn btn-primary " @onclick="CreateSampleReports">Create Reports</button>
+    <button class=" btn btn-primary " @onclick="CreateSampleParts">Create Parts</button>
+
 
 
 }
 
 @code {
 
+    private async Task CreateSampleParts()
+    {
+        var thang = new List<BasicMachineModel>();
+        thang.Add(new BasicMachineModel(await machineData.GetMachine("8719")));
+        PartModel part = new()
+            {
+                Description = "test",
+                Name = "test part 1",
+                SerialNumber = "yert",
+                Supplier = "no one fucking knows",
+                Machines = thang,
+
+            };
+
+        await partData.CreatePart(part);
+    }
     private bool machinesCreated = false;
     private async Task CreateMachines()
     {
@@ -28,12 +47,15 @@ else
         {
             return;
         }
+        var thang = new List<BasicPartModel>();
+        thang.Add(new BasicPartModel(await partData.GetPart("test part 1")));
 
         MachineModel machine = new()
             {
                 MachineName = "8719",
                 MachineDept = "Department 369",
                 MachineDescription = "This is a test machine",
+                PartsList = thang,
 
             };
         await machineData.CreateMachines(machine);

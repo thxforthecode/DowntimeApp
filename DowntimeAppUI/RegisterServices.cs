@@ -30,6 +30,7 @@ public static class RegisterServices
       builder.Services.AddSingleton<IMachineData, MongoMachineData>();
       builder.Services.AddSingleton<IUserData, MongoUserData>();
       builder.Services.AddSingleton<IReportData, MongoReportData>();
+      builder.Services.AddSingleton<IPartData, MongoPartData>();
 
    }
 }

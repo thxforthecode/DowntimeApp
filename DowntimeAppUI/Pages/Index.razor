@@ -7,10 +7,14 @@
 @inject ProtectedSessionStorage sessionStorage
 @inject AuthenticationStateProvider authProvider
 
+
+
 <h1 class="page-heading text-uppercase mb-4">Downtime Reports</h1>
 <div class="report-container">
     <button @onclick="LoadCreatePage" class="create-btn btn btn-outline-light btn-lg text-uppercase">Create a Report</button>
-    <button @onclick="LoadCreateMachinePage" class="create-btn btn btn-outline-light btn-lg text-uppercase">Create a Machine</button>
+    <AuthorizeView Policy="Admin">
+        <button @onclick="LoadCreateMachinePage" class="create-btn btn btn-outline-light btn-lg text-uppercase">Create a Machine</button>
+    </AuthorizeView>
 </div>
 
 <div class="row">

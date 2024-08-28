@@ -7,6 +7,7 @@
 @inject IMachineData machineData
 @inject IUserData userData
 @inject IReportData reportData
+@inject IPartData partData
 @inject NavigationManager navManager
 
 
@@ -30,13 +31,14 @@
                 <div class="input-section">
                     <label class="form-label fw-bold text-uppercase" for="machine">Machine</label>
                     <div class="input-description">Choose your machine</div>
+                    
                     <div class="col-lg-8">
                         <MyInputRadioGroup id="machine" @bind-Value="report.MachineId">
                             @foreach (var m in machines)
                             {
                                 <div class="radio-item-group">
                                     <InputRadio Value="m.MachineId" id="@m.MachineId" />
-                                    <label for="@m.MachineId">@m.MachineName - @m.MachineDept</label>
+                                    <label @onclick="SelectMachine" for="@m.MachineId">@m.MachineName - @m.MachineDept</label>
                                 </div>
                             }
                         </MyInputRadioGroup>
@@ -65,6 +67,23 @@
                     <div class="input-description">What solved or helped the problem with your machine?</div>
                     <InputTextArea class="form-control" id="solution-text" @bind-Value="report.Solution" />
                 </div>
+                <div class="input-section">
+                    <label class="form-label fw-bold text-uppercase" for="parts-list">Parts List</label>
+                    <div class="input-description">What parts were replaced?</div>
+                    @if(parts is not null)
+                    {
+                        <div>yert</div>
+                        <MyInputRadioGroup id="parts-list" @bind-Value="report.Parts">
+                            @foreach (var p in parts)
+                            {
+                                <div class="radio-item-group">
+                                    <InputRadio Value="p.PartId" id="@p.PartId" />
+                                    <label for="@p.PartId">@p.Name - @p.PartId</label>
+                                </div>
+                            }
+                        </MyInputRadioGroup>
+                    }                   
+                </div>
                 <div class="center-children">
                     <button class="btn btn-main btn-lg text-uppercase" type="submit">Create Report</button>
                 </div>
@@ -80,11 +99,11 @@
 @code {
     private CreateReportModel report = new();
     private List<MachineModel> machines;
+    private List<BasicPartModel> parts;
     private UserModel loggedInUser;
     protected async override Task OnInitializedAsync()
     {
         machines = await machineData.GetAllMachines();
-
         loggedInUser = await authProvider.GetUserFromAuth(userData);
     }
 
@@ -101,6 +120,10 @@
         r.Author = new BasicUserModel(loggedInUser);
         r.Machine = machines.Where(m => m.MachineId == report.MachineId).First();
         r.Status = report.StatusAtCreation;
+        foreach(var p in report.Parts)
+        {
+            r.PartsList.Add(p);
+        }
 
         if(r.Machine == null)
         {
@@ -111,6 +134,11 @@
         await reportData.CreateReport(r);
         report = new();
         ClosePage();
+    }
+
+    private async Task SelectMachine()
+    {
+        parts = report.Parts;
     }
 
 }
