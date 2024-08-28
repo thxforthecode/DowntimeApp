@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <Content Remove="Pages\AdminApproval.razor" />
-    <Content Remove="Pages\CreateMachine.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,16 +21,10 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Pages\AdminApproval.razor" />
-    <_ContentIncludedByDefault Remove="Pages\CreateMachine.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Pages\AdminApproval.razor" />
-    <None Include="Pages\CreateMachine.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Pages\CreateMachine.razor" />
   </ItemGroup>
 
 </Project>
