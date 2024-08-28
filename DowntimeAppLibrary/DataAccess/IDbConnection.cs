@@ -14,5 +14,7 @@ namespace DowntimeAppLibrary.DataAccess
       string ReportCollectionName { get; }
       IMongoCollection<UserModel> UserCollection { get; }
       string UserCollectionName { get; }
+      IMongoCollection<PartModel> PartCollection { get; }
+      string PartCollectionName { get; }
    }
 }

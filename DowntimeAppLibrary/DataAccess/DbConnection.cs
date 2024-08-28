@@ -16,11 +16,16 @@ public class DbConnection : IDbConnection
    public string ReportCollectionName { get; private set; } = "reports";
    public string UserCollectionName { get; private set; } = "users";
 
+   public string PartCollectionName { get; private set; } = "parts";
+
+
    public MongoClient Client { get; private set; }
 
    public IMongoCollection<MachineModel> MachineCollection { get; private set; }
    public IMongoCollection<ReportModel> ReportCollection { get; private set; }
    public IMongoCollection<UserModel> UserCollection { get; private set; }
+
+   public IMongoCollection<PartModel> PartCollection { get; private set; }
 
    public DbConnection(IConfiguration config)
    {
@@ -32,6 +37,7 @@ public class DbConnection : IDbConnection
       MachineCollection = _db.GetCollection<MachineModel>(MachineCollectionName);
       ReportCollection = _db.GetCollection<ReportModel>(ReportCollectionName);
       UserCollection = _db.GetCollection<UserModel>(UserCollectionName);
+      PartCollection = _db.GetCollection<PartModel>(PartCollectionName);
 
    }
 

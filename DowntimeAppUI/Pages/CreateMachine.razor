@@ -1,0 +1,18 @@
+﻿@page "/CreateMachine"
+@attribute [Authorize(Policy = "Admin")]
+@using DowntimeAppUI.Components
+@using DowntimeAppUI.Models
+
+@inject AuthenticationStateProvider authProvider
+@inject IMachineData machineData
+@inject IUserData userData
+@inject IReportData reportData
+@inject NavigationManager navManager
+
+
+
+<h1>yo</h1>
+
+@code {
+    public string yert;
+}

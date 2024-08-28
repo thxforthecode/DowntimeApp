@@ -10,4 +10,6 @@ public class MachineModel
    public string MachineDept { get; set; }
 
    public string MachineDescription { get; set; }
+
+   public List<BasicPartModel> PartsList { get; set; }
 }

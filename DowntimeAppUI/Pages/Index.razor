@@ -10,6 +10,7 @@
 <h1 class="page-heading text-uppercase mb-4">Downtime Reports</h1>
 <div class="report-container">
     <button @onclick="LoadCreatePage" class="create-btn btn btn-outline-light btn-lg text-uppercase">Create a Report</button>
+    <button @onclick="LoadCreateMachinePage" class="create-btn btn btn-outline-light btn-lg text-uppercase">Create a Machine</button>
 </div>
 
 <div class="row">
@@ -108,6 +109,19 @@
         }
     }
 
+    private void LoadCreateMachinePage()
+    {
+        if(loggedInUser is not null)
+        {
+            navManager.NavigateTo("/CreateMachine");
+            
+        }
+        else
+        {
+            navManager.NavigateTo("/MicrosoftIdentity/Account/SignIn", true);
+        }
+    }
+
     private async Task LoadAndVerifyUser()
     {
         var authState = await authProvider.GetAuthenticationStateAsync();
@@ -122,6 +136,7 @@
             string lastName = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("surname"))?.Value;
             string displayName = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("name"))?.Value;
             string email = authState.User.Claims.FirstOrDefault(c => c.Type.Contains("email"))?.Value;
+            
 
             bool isDirty = false;
             if (objectId.Equals(loggedInUser.ObjectIdentifier) == false)
