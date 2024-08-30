@@ -5,7 +5,7 @@ namespace DowntimeAppLibrary.DataAccess
    {
       Task CreateMachines(MachineModel machine);
       Task<List<MachineModel>> GetAllMachines();
-
-      Task<MachineModel> GetMachine(string name);
+      Task<MachineModel> GetMachineById(string machineId);
+      Task<MachineModel> GetMachineByName(string name);
    }
 }

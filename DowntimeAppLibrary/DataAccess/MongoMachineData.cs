@@ -35,7 +35,7 @@ public class MongoMachineData : IMachineData
       return _machines.InsertOneAsync(machine);
    }
 
-   public async Task<MachineModel> GetMachine(string name)
+   public async Task<MachineModel> GetMachineByName(string name)
    {
       var output = await _machines.FindAsync(r => r.MachineName == name);
 
@@ -43,5 +43,12 @@ public class MongoMachineData : IMachineData
       return output.FirstOrDefault();
    }
 
+   public async Task<MachineModel> GetMachineById(string machineId)
+   {
+      var output = await _machines.FindAsync(r => r.MachineId == machineId);
+
+
+      return output.FirstOrDefault();
+   }
 
 }

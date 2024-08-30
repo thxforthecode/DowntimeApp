@@ -10,9 +10,11 @@ public class BasicPartModel
 
    public string Name { get; set; }
 
+   public string SerialNumber { get; set; }
    public BasicPartModel(PartModel part)
    {
       PartId = part.PartId;
-      Name = part.Name;      
+      Name = part.Name;
+      SerialNumber = part.SerialNumber;
    }
 }

@@ -226,7 +226,7 @@ a:hover, .btn-link:hover{
     padding-top: 10px;
 }
 
-report-entry-issue-text{
+.report-entry-issue-text{
     text-transform: uppercase;
     color: darkgrey;
     font-family: 'Montserrat', sans-serif;
@@ -425,4 +425,27 @@ entry-save{
     color: #A9A9A9;
 }
 
+.report-entry-bottom{
+    display: flex;
+}
 
+.btn-archive{
+    border: 0;
+    background-color: #FFFFFF;
+    padding: 0 10px;
+    flex: unset;
+}
+
+.btn-archive-confirm,
+.btn-archive-reject{
+    text-transform: uppercase;
+    color: darkgrey;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    flex: 1;
+}
+
+.btn-archive-confirm{
+    color: #E9354C;
+}

@@ -33,16 +33,43 @@
                     <div class="input-description">Choose your machine</div>
                     
                     <div class="col-lg-8">
-                        <MyInputRadioGroup id="machine" @bind-Value="report.MachineId">
+                        <MyInputRadioGroup  @bind-Value="report.MachineId">
                             @foreach (var m in machines)
                             {
                                 <div class="radio-item-group">
                                     <InputRadio Value="m.MachineId" id="@m.MachineId" />
-                                    <label @onclick="SelectMachine" for="@m.MachineId">@m.MachineName - @m.MachineDept</label>
+                                    <label for="@m.MachineId" >@m.MachineName - @m.MachineDept</label>
                                 </div>
+                            }
+                            @if(report.MachineId is not null)
+                            {
+                                <button class="btn btn-main btn-sm text-uppercase" type="button" @onclick="SelectMachine">Show Parts List</button>
+                                
                             }
                         </MyInputRadioGroup>
                     </div>
+                </div>
+                <div class="input-section">
+                    <label class="form-label fw-bold text-uppercase" for="parts-list">Parts List</label>
+                    <div class="input-description">What parts were replaced?</div>
+                    @if (parts is not null)
+                    {
+                       
+                            @foreach(var p in parts)
+                            {
+                                <div class="radio-item-group">
+                                    <InputCheckbox Value="partFlags[partIndex]" id="@p.PartId" />
+                                    <label for="@p.PartId">@p.Name - @p.SerialNumber</label>
+                                </div>
+                                partIndex++;
+                            }
+                        
+                        partIndex = 0;
+                    }
+                    else
+                    {
+                        <div>This Machine's Parts List is currently empty!</div>
+                    }
                 </div>
                 <div class="input-section">
                     <label class="form-label fw-bold text-uppercase" for="status">Status</label>
@@ -67,23 +94,7 @@
                     <div class="input-description">What solved or helped the problem with your machine?</div>
                     <InputTextArea class="form-control" id="solution-text" @bind-Value="report.Solution" />
                 </div>
-                <div class="input-section">
-                    <label class="form-label fw-bold text-uppercase" for="parts-list">Parts List</label>
-                    <div class="input-description">What parts were replaced?</div>
-                    @if(parts is not null)
-                    {
-                        <div>yert</div>
-                        <MyInputRadioGroup id="parts-list" @bind-Value="report.Parts">
-                            @foreach (var p in parts)
-                            {
-                                <div class="radio-item-group">
-                                    <InputRadio Value="p.PartId" id="@p.PartId" />
-                                    <label for="@p.PartId">@p.Name - @p.PartId</label>
-                                </div>
-                            }
-                        </MyInputRadioGroup>
-                    }                   
-                </div>
+                
                 <div class="center-children">
                     <button class="btn btn-main btn-lg text-uppercase" type="submit">Create Report</button>
                 </div>
@@ -101,6 +112,11 @@
     private List<MachineModel> machines;
     private List<BasicPartModel> parts;
     private UserModel loggedInUser;
+    private string lastId;
+    private bool[] partFlags = new bool[100];
+    private int partIndex = 0;
+
+    //ValueChanged="((string e) => SelectMachine(e))" TValue="string" ValueExpression="() => report.MachineId" id="machine"
     protected async override Task OnInitializedAsync()
     {
         machines = await machineData.GetAllMachines();
@@ -120,11 +136,13 @@
         r.Author = new BasicUserModel(loggedInUser);
         r.Machine = machines.Where(m => m.MachineId == report.MachineId).First();
         r.Status = report.StatusAtCreation;
-        foreach(var p in report.Parts)
+        if(report.Parts is not null)
         {
-            r.PartsList.Add(p);
+            foreach(var p in report.Parts)
+            {
+                r.PartsList.Add(p);
+            }    
         }
-
         if(r.Machine == null)
         {
             report.MachineId = "";
@@ -136,9 +154,40 @@
         ClosePage();
     }
 
-    private async Task SelectMachine()
+    private void SelectMachine()
     {
-        parts = report.Parts;
+        var mach = machines.Where(m => m.MachineId == report.MachineId).First();
+
+        parts = mach.PartsList;
+
+        return;
+
+        // var mach = await machineData.GetMachineById(machId);
+        // if(mach.PartsList is not null)
+        // {
+        //     parts = mach.PartsList;
+        // }
+        // else
+        // {
+        //     return;
+        // }
     }
 
+    private void AddPartsToList()
+    {
+        int ind = 0;
+
+        foreach(var p in parts)
+        {
+            if (partFlags[ind])
+            {
+                report.Parts.Add(p);
+            }
+
+            ind++;
+        }
+
+        
+        return;
+    }
 }

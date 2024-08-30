@@ -21,4 +21,5 @@ public class CreateReportModel
    public bool StatusAtCreation { get; set; }
 
    public List<BasicPartModel> Parts { get; set; }
+
 }
