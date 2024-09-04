@@ -20,6 +20,6 @@ public class CreateReportModel
    [Required]
    public bool StatusAtCreation { get; set; }
 
-   public List<BasicPartModel> Parts { get; set; }
+   public List<BasicPartModel> Parts { get; set; } = new List<BasicPartModel>();
 
 }

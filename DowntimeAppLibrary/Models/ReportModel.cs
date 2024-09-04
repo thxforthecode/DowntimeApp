@@ -26,7 +26,7 @@ public class ReportModel
 
    public bool Archived { get; set; } = false;
 
-   public List<BasicPartModel> PartsList { get; set; }
+   public List<BasicPartModel> PartsList { get; set; } = new List<BasicPartModel>();
 
 
 

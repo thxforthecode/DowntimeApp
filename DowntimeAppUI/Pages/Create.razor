@@ -55,16 +55,14 @@
                     @if (parts is not null)
                     {
                        
-                            @foreach(var p in parts)
-                            {
-                                <div class="radio-item-group">
-                                    <InputCheckbox Value="partFlags[partIndex]" id="@p.PartId" />
-                                    <label for="@p.PartId">@p.Name - @p.SerialNumber</label>
-                                </div>
-                                partIndex++;
-                            }
-                        
-                        partIndex = 0;
+                        @foreach(var p in parts)
+                        {
+                            <div class="radio-item-group">
+                                <InputCheckbox @bind-Value="@p.isIncluded" id="@p.PartId" />
+                                <label for="@p.PartId">@p.Name - @p.SerialNumber</label>
+                            </div>
+                        }
+                        <button class="btn btn-main btn-sm text-uppercase" type="button" @onclick="AddPartsToList">Add Selected Parts to Report</button>
                     }
                     else
                     {
@@ -110,7 +108,7 @@
 @code {
     private CreateReportModel report = new();
     private List<MachineModel> machines;
-    private List<BasicPartModel> parts;
+    private List<CreatePartsListModel> parts;
     private UserModel loggedInUser;
     private string lastId;
     private bool[] partFlags = new bool[100];
@@ -156,9 +154,20 @@
 
     private void SelectMachine()
     {
+        if (parts == null)
+        {
+            parts = new List<CreatePartsListModel>();
+        }
         var mach = machines.Where(m => m.MachineId == report.MachineId).First();
 
-        parts = mach.PartsList;
+        if(mach.PartsList is not null)
+        {
+            foreach(var p in mach.PartsList)
+            {
+                var thang = new CreatePartsListModel(p);
+                parts.Add(thang); 
+            }
+        }
 
         return;
 
@@ -173,21 +182,33 @@
         // }
     }
 
-    private void AddPartsToList()
+    private async void AddPartsToList()
     {
-        int ind = 0;
 
         foreach(var p in parts)
         {
-            if (partFlags[ind])
+            if (p.isIncluded)
             {
-                report.Parts.Add(p);
+                var part =  await partData.GetPart(p.PartId);
+                var basicPart = new BasicPartModel(part);
+                report.Parts.Add(basicPart);
             }
 
-            ind++;
         }
 
-        
+
         return;
+    }
+
+    private bool SetFlag(bool flag)
+    {
+        if (!flag)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

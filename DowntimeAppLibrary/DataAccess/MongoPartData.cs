@@ -32,9 +32,9 @@ public class MongoPartData : IPartData
       return output;
    }
 
-   public async Task<PartModel> GetPart(string partName)
+   public async Task<PartModel> GetPart(string partId)
    {
-      var output = await _parts.FindAsync(p => p.Name == partName);
+      var output = await _parts.FindAsync(p => p.PartId == partId);
       //might actually want to return more than one if its there. not sure what that would look like. 
       return output.FirstOrDefault();
    }
