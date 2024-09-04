@@ -13,7 +13,7 @@ public class ReportModel
 
    public string Solution { get; set; }
    public int DowntimeAmount { get; set; }
-   public MachineModel Machine { get; set; }
+   public BasicMachineModel Machine { get; set; }
 
    public BasicUserModel Author { get; set; }
    public DateTime WhenCreated { get; set; } = DateTime.UtcNow;
@@ -26,7 +26,7 @@ public class ReportModel
 
    public bool Archived { get; set; } = false;
 
-   public List<BasicPartModel> PartsList { get; set; } = new List<BasicPartModel>();
+   public List<BasicPartModel> PartsList { get; set; } = new();
 
 
 

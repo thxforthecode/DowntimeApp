@@ -100,7 +100,7 @@ else
                 Issue = "Test Issue",   
                 Solution = "operator error",
                 DowntimeAmount = 55,
-                Machine = await machineData.GetMachineByName("8719"),
+                Machine = new BasicMachineModel(await machineData.GetMachineByName("8719")),
                 Author = new BasicUserModel(await userData.GetUser("66a0ee877b66fed7f064822c")),
                 WhenCreated = DateTime.Now,
                 UserSaves = { },

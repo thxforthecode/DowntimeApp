@@ -63,10 +63,28 @@
                             </div>
                         }
                         <button class="btn btn-main btn-sm text-uppercase" type="button" @onclick="AddPartsToList">Add Selected Parts to Report</button>
+                        <button class="btn btn-main btn-sm text-uppercase" type="button" @onclick="() => newPartFlag = true">Create a New Part</button>
                     }
                     else
                     {
                         <div>This Machine's Parts List is currently empty!</div>
+                        @if (report.MachineId is not null)
+                        {
+                            <button class="btn btn-main btn-sm text-uppercase" type="button" @onclick="() => newPartFlag = true">Create a New Part</button>
+                        }
+
+                    }
+
+                    @if (newPartFlag && report.MachineId is not null)
+                    {
+                        <EditForm Context="partForm" Model="newPart" OnValidSubmit="CreatePart">
+                            <DataAnnotationsValidator  />
+                            <ValidationSummary />
+
+
+                           
+
+                        </EditForm>
                     }
                 </div>
                 <div class="input-section">
@@ -107,12 +125,11 @@
 
 @code {
     private CreateReportModel report = new();
+    private PartModel newPart = new();
     private List<MachineModel> machines;
     private List<CreatePartsListModel> parts;
     private UserModel loggedInUser;
-    private string lastId;
-    private bool[] partFlags = new bool[100];
-    private int partIndex = 0;
+    private bool newPartFlag = false;
 
     //ValueChanged="((string e) => SelectMachine(e))" TValue="string" ValueExpression="() => report.MachineId" id="machine"
     protected async override Task OnInitializedAsync()
@@ -132,7 +149,7 @@
         r.Issue = report.Issue;
         r.Solution = report.Solution;
         r.Author = new BasicUserModel(loggedInUser);
-        r.Machine = machines.Where(m => m.MachineId == report.MachineId).First();
+        r.Machine = new BasicMachineModel(machines.Where(m => m.MachineId == report.MachineId).First());
         r.Status = report.StatusAtCreation;
         if(report.Parts is not null)
         {
@@ -150,6 +167,21 @@
         await reportData.CreateReport(r);
         report = new();
         ClosePage();
+    }
+
+    private async Task CreatePart()
+    {
+        PartModel p = new();
+        p.SerialNumber = newPart.SerialNumber;
+        p.Supplier = newPart.Supplier;
+        p.Name = newPart.Name;
+        p.Machines = new List<BasicMachineModel>();
+        p.Machines.Add(new BasicMachineModel(machines.Where(m => m.MachineId == report.MachineId).First()));
+
+        await partData.CreatePart(p);
+        newPart = new();
+        newPartFlag = false;
+
     }
 
     private void SelectMachine()
