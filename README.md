@@ -55,9 +55,6 @@ Adding a feature to export downtime reports in various formats (e.g., CSV, PDF).
 ## Acknowledgements
 Tim Corey: This project was originally coded side by side with Tim Corey's "Suggestion Site App" tutorial series. The code structure, especially in the initial stages, closely follows his approach. Thank you, Tim, for the educational content!
 
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
 ## Contributing
 Contributions are welcome! Please fork the repository and create a pull request with your changes.
 
