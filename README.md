@@ -10,10 +10,10 @@ _This is a downtime reporting application originally built as part of my learnin
 
 ## Key Features
 
-Downtime Reporting: Log downtime events, categorize them, and provide relevant details.
-Machine-Specific Parts Tracking: Create a machine-specific list of parts that can be individually selected when authoring downtime reports. This helps in tracking replacements and maintenance history.
-User Authentication: Secure login and user management using Azure AD B2C.
-Blazor Frontend with MongoDB Backend: A modern tech stack using Blazor for a dynamic single-page application experience and MongoDB for flexible, NoSQL data storage.
+- **Downtime Reporting:** Log downtime events, categorize them, and provide relevant details.
+- **Machine-Specific Parts Tracking:** Create a machine-specific list of parts that can be individually selected when authoring downtime reports. This helps in tracking replacements and maintenance history.
+- **User Authentication:** Secure login and user management using Azure AD B2C.
+- **Blazor Frontend to MongoDB cluster:** A modern tech stack using Blazor for a dynamic single-page application experience and MongoDB for flexible, NoSQL data storage.
 
 
 ## Getting Started
